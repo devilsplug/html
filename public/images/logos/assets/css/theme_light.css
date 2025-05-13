@@ -1,0 +1,53 @@
+/*!
+ * Copyright Mopaiv (https://mopaiv.com) 2022. All rights reserved.
+ */
+ 
+:root {
+	--primary_bg: linear-gradient(13deg, #1890ff 0%, #48b0f9 56%);
+	--primary_bg_focus: linear-gradient(13deg, #1a83e7 0%, #3aa0e9 56%);
+	--primary_color: #1890ff;
+	--primary_color_focus: #1a83e7;
+	
+	--success_bg: linear-gradient(13deg, #25bf49 0%, #33e65d 56%);
+	--success_bg_focus: linear-gradient(13deg, #1fac40 0%, #2bd352 56%);
+	--success_color: #25bf49;
+	--success_color_focus: #1fac40;
+	
+	--danger_bg: linear-gradient(13deg, #e7393b 0%, #ff595c 56%);
+	--danger_bg_focus: linear-gradient(13deg, #c02b2d 0%, #eb4e50 56%);
+	--danger_color: #e7393b;
+	--danger_color_focus: #c02b2d;
+	
+	--warning_bg: linear-gradient(13deg, #ffa500 0%, #f4b43e 56%);
+	--warning_bg_focus: linear-gradient(13deg, #e19301 0%, #f3ac28 56%);
+	--warning_color: #ffa500;
+	--warning_color_focus: #e19301;
+	
+	--muted: #6c757d;
+	--focus: #7676761a;
+	--divider: #5d5d5d1a;
+	
+	--body_bg: #e5ecef;
+	--body_color: #333;
+	
+	--link_color: var(--primary_color);
+	--link_color_focus: var(--primary_color_focus);
+	
+	--navbar_bg: var(--primary_bg);
+	--navbar_bg_focus: #ffffff1a;
+	--navbar_color: #fff;
+	--navbar_box_shadow: 0 1px 2px 0 #22242626;
+	--navbar_brand_bg: #fff;
+	
+	--content_bg: #fff;
+	--content_inner_bg: #f8f8f8;
+	--content_inner_border: 1px solid var(--divider);
+	--content_top_bg: #f8f8f8;
+	--content_color: var(--body_color);
+	--content_box_shadow: 0 1px 2px 0 #22242626;
+	
+	--input_bg: #f8f8f8;
+	--input_color: var(--body_color);
+	--input_color_placeholder: var(--muted);
+	--input_border: 1px solid var(--divider);
+}

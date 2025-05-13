@@ -1,0 +1,39 @@
+body {
+	background: #f4f9f3d2;
+}
+
+a {
+	color: #05ae08;
+}
+
+a:hover, a:focus {
+	color: #0b960d;
+}
+
+.card .card-top {
+	background: #f8faf8!important;
+}
+
+.card .card-header {
+	border-color: #05ae08;
+}
+
+.navbar, .dropdown-item:focus, .nav-pills .nav-link.active, .card .card-header, .btn.btn-primary, .bg-primary {
+	background: #05ae08!important;
+}
+
+.btn.btn-primary {
+	border-color: #05ae08!important;
+}
+
+.navbar .nav-link:active, .navbar .nav-link:hover, .navbar .nav-link:focus, .btn.btn-primary:hover:not(:disabled), .btn.btn-primary:active:not(:disabled) {
+	background: #0b960d!important;
+}
+
+.btn.btn-primary:hover:not(:disabled), .btn.btn-primary:active:not(:disabled) {
+	border-color: #0b960d!important;
+}
+
+.text-primary {
+	color: #05ae08!important;
+}
