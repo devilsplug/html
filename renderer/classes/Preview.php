@@ -28,6 +28,7 @@ class Preview
         }
         
         $this->blender->colorObjects(color_array('item_body_color'));
+        $this->blender->smoothModels();
         $this->blender->saveThumbnail($this->filename, 'user_avatar');
         $this->blender->execute($this->filename);
         

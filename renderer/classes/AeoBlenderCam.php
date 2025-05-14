@@ -13,10 +13,8 @@ class Blender
         
         $this->comment("{$site} Python Renderer\n\nDATE: {$date}\nSERVER TIMEZONE: {$timezone}");
         $this->code('import bpy');
-        $this->code('import struct');
-        $this->code('from bpy import context');
-        $this->code('from mathutils import Euler');
         $this->code('import math');
+        $this->code('from mathutils import Euler');
         $this->code('pi = math.pi');
         $this->code('def hex_to_rgb(value):');
         $this->code('gamma = 2.05', 1);
@@ -31,6 +29,8 @@ class Blender
         $this->code('fin.append(g)', 1);
         $this->code('fin.append(b)', 1);
         $this->code('return tuple(fin)', 1);
+        $this->code('bpy.context.scene.render.engine = "CYCLES"
+', 1);
     }
     
     public function comment($comment)
@@ -53,15 +53,20 @@ class Blender
     public function execute($tmpFilename)
     {
         $tmpDir = sys_get_temp_dir();
-        $tmpFile = "/tmp/{$tmpFilename}.py";
+        $tmpFile = "{$tmpDir}/{$tmpFilename}.py";
         
         file_put_contents($tmpFile, $this->python);
-        exec("/var/www/Brick-Hill/renderer/jp-blender/blender --background --python {$tmpFile}");
+        exec("/var/www/aeo-blender/blender --background --python {$tmpFile}");
     }
     
     public function importBlend($filename)
     {
         $this->code("bpy.ops.wm.open_mainfile(filepath='{$filename}')");
+    }
+
+    public function smoothModels(){
+        $this->code("for m in bpy.data.materials:");
+        $this->code("m.specular_intensity = 0.0", 1);
     }
     
     public function importModel($var, $filename)
@@ -101,7 +106,7 @@ class Blender
     public function setTexture($var, $object, $filename)
     {
         $directories = config('DIRECTORIES');
-        $texture = ($filename == 'default') ? "{$directories['ROOT']}/img/face.png" : "{$directories['UPLOADS']}/{$filename}.png";
+        $texture = ($filename == 'default') ? "{$directories['ROOT']}/img/facebp.png" : "{$directories['UPLOADS']}/{$filename}.png";
         
         if ($filename == 'default' || texture_exists($filename)) {
             $this->code("if bpy.data.objects.get('{$object}'):");
@@ -126,6 +131,7 @@ class Blender
         if ($filename) {
             $this->setTexture('leftLeg', 'LeftLeg', $filename);
             $this->setTexture('rightLeg', 'RightLeg', $filename);
+            $this->setTexture('Pelvis', 'Pelvis', $filename);
         }
     }
     
@@ -155,7 +161,7 @@ class Blender
         $this->code('camera = bpy.data.objects["Camera"]');
         
         if ($isFace)
-            $this->code('camera.rotation_euler[0] = 2.3');
+            $this->code('camera.rotation_euler[0] = 1.3');
         
         $this->code("camera.rotation_euler[2] = {$amount}");
         $this->code('camera.rotation_mode = "XYZ"');
@@ -177,6 +183,7 @@ class Blender
     
     public function saveThumbnail($filename, $imageSize)
     {
+        $camera = config('AVATAR_CAMERA');
         $imageSize = config('IMAGE_SIZES', strtoupper($imageSize)) ?? 512;
         $directory = config('DIRECTORIES', 'THUMBNAILS');
         $filename = "{$directory}/{$filename}.png";
@@ -191,7 +198,15 @@ class Blender
             $this->code('bpy.ops.object.join()');
             $this->code('bpy.ops.view3d.camera_to_view_selected()');
         }
-        
+        $this->code('camera = bpy.data.objects["Camera"]');
+        $this->code("camera.location.x = {$camera['LOCATION']['X']}");
+        $this->code("camera.location.y = {$camera['LOCATION']['Y']}");
+        $this->code("camera.location.z = {$camera['LOCATION']['Z']}");
+        $this->code("camera.rotation_euler[0] = {$camera['ROTATION']['X']} * (pi / 180.0)");
+        $this->code("camera.rotation_euler[1] = {$camera['ROTATION']['Y']} * (pi / 180.0)");
+        $this->code("camera.rotation_euler[2] = {$camera['ROTATION']['Z']} * (pi / 180.0)");
+        $this->code('camera.rotation_mode = "XYZ"');
+      
         $this->code('origAlphaMode = bpy.data.scenes["Scene"].render.alpha_mode');
         $this->code('bpy.data.scenes["Scene"].render.alpha_mode = "TRANSPARENT"');
         $this->code('bpy.data.scenes["Scene"].render.alpha_mode = origAlphaMode');
@@ -206,7 +221,7 @@ class Blender
         $camera = config('HEADSHOT_CAMERA');
         $directory = config('DIRECTORIES', 'THUMBNAILS');
         $imageSize = config('IMAGE_SIZES', 'USER_HEADSHOT');
-        $filename = "{$directory}/{$filename}_headshot.png";
+        $filename = "{$directory}/{$filename}-thumb.png";
         
         $this->code('camera = bpy.data.objects["Camera"]');
         $this->code("camera.location.x = {$camera['LOCATION']['X']}");
@@ -216,6 +231,7 @@ class Blender
         $this->code("camera.rotation_euler[1] = {$camera['ROTATION']['Y']} * (pi / 180.0)");
         $this->code("camera.rotation_euler[2] = {$camera['ROTATION']['Z']} * (pi / 180.0)");
         $this->code('camera.rotation_mode = "XYZ"');
+        
         $this->code("bpy.data.scenes['Scene'].render.resolution_x = {$imageSize}");
         $this->code("bpy.data.scenes['Scene'].render.resolution_y = {$imageSize}");
         $this->code("bpy.data.scenes['Scene'].render.filepath = '{$filename}'");

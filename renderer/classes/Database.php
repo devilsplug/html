@@ -24,11 +24,6 @@ class Database
         $user->id = $user->user_id;
         $user->hats = [];
 
-	if ($user->head) {
-            $item = $this->getItem($user->head);
-            $user->head = $item->filename;
-        }
-
         if ($user->hat_1) {
             $item = $this->getItem($user->hat_1);
             $user->hats[] = $item->filename;
@@ -49,9 +44,9 @@ class Database
             $user->face = $item->filename;
         }
 
-        if ($user->tool) {
-            $item = $this->getItem($user->tool);
-            $user->tool = $item->filename;
+        if ($user->gadget) {
+            $item = $this->getItem($user->gadget);
+            $user->gadget = $item->filename;
         }
 
         if ($user->tshirt) {

@@ -35,7 +35,7 @@ return [
     'FACES_PNG'       => false,
 
     // Site
-    'SITE_NAME' => 'BrickPlanet',
+    'SITE_NAME' => 'Brickplanet',
 
     // Directories
     'DIRECTORIES' => [
@@ -49,12 +49,12 @@ return [
 
     // Avatar
     'AVATARS' => [
-        'DEFAULT' => '/var/www/html/renderer/blend/bp.blend',
-        'GADGET'  => '/var/www/html/renderer/blend/bpavgear.blend',
+        'DEFAULT' => '/var/www/html/renderer/blend/bpava.blend',
+        'GADGET'  => '/var/www/html/renderer/blend/nobevels_avatar_gear.blend',
     ],
 
     // Headshot Camera
-   'HEADSHOT_CAMERA' => [
+    'HEADSHOT_CAMERA' => [
         'LOCATION' => [
             'X' => '-0.956932',
             'Y' => '-2.44959',
@@ -65,21 +65,6 @@ return [
             'X' => '69.6752',
             'Y' => '-0.00183',
             'Z' => '-18.3953'
-        ]
-    ],
-  
-    // Avatar Camera
-    'AVATAR_CAMERA' => [
-        'LOCATION' => [
-            'X' => '-1.73156',
-            'Y' => '-5.86332',
-            'Z' => '5.88582'
-        ],
-
-        'ROTATION' => [
-            'X' => '65.56214',
-            'Y' => '-0.3928324',
-            'Z' => '-13.81374'
         ]
     ],
 

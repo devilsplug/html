@@ -15,7 +15,7 @@ class Item
         $this->blender = new Blender;
         $this->db = $db;
         $this->filename = $filename;
-      //  $this->clothingFilenames = explode(',', $clothingFilenames);
+        $this->clothingFilenames = explode(',', $clothingFilenames);
     }
     
     public function render()
@@ -27,19 +27,17 @@ class Item
         $avatars = config('AVATARS');
         
         if (config('FACES_PNG') && $this->item->type == 'face') {
-	echo "face";
             return $this->resizeFace($this->filename, $this->item->filename);
         } else if ($this->item->type != 'bundle') {
-	echo "not face";
-            $avatar = $avatars[($this->item->type == 'tool') ? 'TOOL' : 'DEFAULT'];
+            $avatar = $avatars[($this->item->type == 'gadget') ? 'GADGET' : 'DEFAULT'];
             $face = ($this->item->type == 'face') ? $this->item->filename : 'default';
         } else {
             $avatar = $avatars['DEFAULT'];
             $face = 'default';
             
             foreach ($this->item->bundle_items as $bundleItem)
-                if ($bundleItem['type'] == 'tool')
-                    $avatar = $avatars['TOOL'];
+                if ($bundleItem['type'] == 'gadget')
+                    $avatar = $avatars['GADGET'];
                 
                 if ($bundleItem['type'] == 'face')
                     $face = $bundleItem['filename'];
@@ -52,24 +50,20 @@ class Item
             case 'hat':
                 $blender->importModel('hat', $this->item->filename);
                 $focused[] = 'hat';
+                $focused[] = 'Head';
                 
                 if ($focus)
                     $focused[] = 'Head';
                 else
                     $blender->removeObjects(['Head', 'Torso', 'LeftArm', 'LeftHand', 'RightArm', 'RightHand', 'LeftLeg', 'RightLeg']);
                 break;
-	   case 'head':
-		$blender->removeObjects(['Head', 'Torso', 'LeftArm', 'LeftHand', 'RightArm', 'RightHand', 'LeftLeg','RightLeg']);
-		$blender->importModel('Head', $this->item->filename);
-                $focused[] = 'Head';
-                break;
             case 'face':
-                $blender->removeObjects(['Torso', 'LeftArm', 'LeftHand', 'RightArm', 'RightHand', 'LeftLeg', 'RightLeg']);
-                $focused[] = 'Head';
+               $focused[] = 'Head';
+               $blender->removeObjects(['Torso', 'LeftArm', 'LeftHand', 'RightArm', 'RightHand', 'LeftLeg', 'RightLeg']);
                 break;
-            case 'tool':
-                $blender->importModel('tool', $this->item->filename);
-                $focused[] = 'tool';
+            case 'gadget':
+                $blender->importModel('gadget', $this->item->filename);
+                $focused[] = 'gadget';
                 
                 if ($focus) {
                     $focused[] = 'RightArm';
@@ -79,11 +73,17 @@ class Item
                 }
                 break;
             case 'shirt':
-		echo "shirt";
                 $blender->setShirt($this->item->filename);
+                $focused[] = 'Torso';
+                $focused[] = 'LeftArm';
+                //$focused[] =  'LeftHand';
+                $focused[] = 'RightArm';
                 break;
             case 'pants':
                 $blender->setPants($this->item->filename);
+                $focused[] = 'LeftLeg';
+                //$focused[] =  'LeftHand';
+                $focused[] = 'RightLeg';
                 break;
             case 'clothing_bundle':
                 $blender->setShirt($this->clothingFilenames[0]);
@@ -107,8 +107,12 @@ class Item
                     }
                 }
                 break;
+
+                
         }
-        
+
+        $this->blender->smoothModels();
+
         $blender->colorObjects(color_array('item_body_color'));
         
         if (!in_array($this->item->type, ['shirt', 'pants', 'bundle'])) {
@@ -150,7 +154,7 @@ class Item
         $transparency = imagecolorallocatealpha($newImage, 255, 255, 255, 127);
         
         imagefilledrectangle($newImage, 0, 0, $imageSize, $imageSize, $transparency);
-        imagecopyresampled($newImage, $image, 0, 0, 0, 0, 512, 512, imagesx($image), imagesy($image));
+        imagecopyresampled($newImage, $image, 0, 0, 0, 0, $imageSize, $imageSize, imagesx($image), imagesy($image));
         
         imagepng($newImage, $filename);
         delete_thumbnail($originalFilename);
